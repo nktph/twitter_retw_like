@@ -10,7 +10,8 @@ btnAccounts = InlineKeyboardButton(text='👤 Работа с аккаунтам
 #btnTimings = InlineKeyboardButton(text='🕑 Установить задержки', callback_data='delays')
 #btnQuantity = InlineKeyboardButton(text='📐 Установить количество твитов', callback_data='quantity')
 btnBegin = InlineKeyboardButton(text='🤖 Запуск', callback_data='launch')
-mainMenu = InlineKeyboardMarkup(row_width=1).add(btnAccounts, btnBegin)
+btnList = InlineKeyboardButton(text='🗄 Список аккаунтов', callback_data='accounts_list')
+mainMenu = InlineKeyboardMarkup(row_width=1).add(btnAccounts, btnList,btnBegin)
 
 # --Cookie--
 btnAddCookies = InlineKeyboardButton('📂 Добавить новый аккаунт', callback_data='add_new_account')

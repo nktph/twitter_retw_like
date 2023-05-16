@@ -39,16 +39,6 @@ try:
     async def process_start_command(message: types.Message):
         await message.answer("Привет\nДержи меню", reply_markup=nav.mainMenu)
 
-    # Выбор операции над аккаунтом
-    #@dp.message_handler(state=StateWorker.work_accounts)
-    #async def add_account(message: types.Message, state: FSMContext):
-    #    if message.text == '📂 Добавить новый аккаунт':
-    #        await message.answer("Аккаунты добавлены")
-    #    elif message.text == '🗑 Очистить все аккаунты':
-    #        await message.answer("Аккаунты удалены")
-#
-    #    await state.finish()
-
     # Добавление Аккаунтов
     @dp.message_handler(state=StateWorker.work_accounts)
     async def add_account(message: types.Message, state: FSMContext):
@@ -134,12 +124,17 @@ try:
                 await bot.send_message(message.from_user.id, 'Сначала добавьте аккаунты')
                 return await state.finish()
 
+            tweets = 0 # я на чиле :)
+            likes = 0 # я на чиле :)
+
             for i in accounts:
-                main_script.start_account(int(message.text), i['login'], i['password'], i['mail'], i['mail_password'], data['url'])
+                res = main_script.start_account(int(message.text), i['login'], i['password'], i['mail'], i['mail_password'], data['url'])
+                tweets += res[1]
+                likes += res[0]
+
+            await bot.send_message(message.from_user.id, f'Успешно накручено {tweets} ретвитов и {likes} лайков')
 
             await state.finish()
-
-
 
     @dp.message_handler(state=StateWorker.add_account_login)
     async def add_account_login(message: types.Message, state: FSMContext):
@@ -153,27 +148,6 @@ try:
 
         await bot.delete_message(message.chat.id, message.message_id)
         await bot.send_message(message.chat.id, "Убедитесь что ввели данные от аккаунта в верном формате логин:пароль")
-
-    # Задание задержек
-  #  @dp.message_handler(state=StateWorker.set_delays)
-  #  async def add_account(message: types.Message, state: FSMContext):
-  #      await message.answer("Задайте задержку между лайком и ретвитом")
-  #      await StateWorker.set_delay_like_retw.set()
-#
-  #  # Задержка между лайком и ретвитом
-  #  @dp.message_handler(state=StateWorker.set_delay_like_retw)
-  #  async def add_account(message: types.Message, state: FSMContext):
-  #      #async with state.proxy() as data:
-  #      if message.text.isdigit():
-  #          await message.answer("Задержка между лайком и ретвитом установлена\nТеперь задайте задержу между твитами")
-  #          await state.set_state(StateWorker.set_delay_tweet.state)
-#
-  #  # Задержка между лайком и ретвитом
-  #  @dp.message_handler(state=StateWorker.set_delay_tweet)
-  #  async def add_account(message: types.Message, state: FSMContext):
-  #      if message.text.isdigit():
-  #          await message.answer("Задержка между твитами установлена")
-  #          await state.finish()
 
 
     # Приёмник комманд
@@ -218,18 +192,34 @@ try:
             db.Accounts.delete().execute()
             await call.message.edit_text('Успешно', reply_markup=nav.mainMenu)
 
-       # elif call.data == '⬅️Главное меню':
-       #     await call.message.answer('Главное меню', reply_markup=nav.mainMenu)
-#
-       # elif call.data == '📂 Добавить новый аккаунт':
-       #     await call.message.answer('Новый аккаунт', reply_markup=types.ReplyKeyboardRemove())
-       #     await StateWorker.add_account.set()
-       # elif call.data == '🗑 Очистить все аккаунты':
-       #     #await clear_cookies_all()
-       #     await call.message.answer('Аккаунты удалены', reply_markup=nav.mainMenu)
+        elif call.data == 'accounts_list':
+            temp_kb = types.InlineKeyboardMarkup()
 
+            for i in db.Accounts.select().dicts():
+                temp_kb.add(
+                    types.InlineKeyboardButton(text=i['login'], callback_data=f'del_{i["login"]}')
+                )
+                print(i)
 
+            temp_kb.add(nav.back_button)
 
+            await call.message.edit_text('При нажатии на аккаунт он удаляется', reply_markup=temp_kb)
+
+        elif 'del_' in call.data:
+            login = call.data.replace('del_', '', 1)
+            db.Accounts.delete().where(db.Accounts.login == login).execute()
+
+            temp_kb = types.InlineKeyboardMarkup()
+
+            for i in db.Accounts.select().dicts():
+                temp_kb.add(
+                    types.InlineKeyboardButton(text=i['login'], callback_data=f'del_{i["login"]}')
+                )
+                print(i)
+
+            temp_kb.add(nav.back_button)
+
+            await call.message.edit_reply_markup(reply_markup=temp_kb)
 
     # Запуск процесса поллинга новых апдейтов
     async def main():
