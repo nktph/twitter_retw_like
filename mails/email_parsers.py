@@ -70,6 +70,7 @@ def get_code(login, password, server):
         code = input(f"Введите код пришедший на почту {login}...")
         return str(code)
     else:
+
         senders, subjects = read_mail(login, password, server)
         try:
             if "info@twitter" in senders[0]:

@@ -149,7 +149,6 @@ try:
         await bot.delete_message(message.chat.id, message.message_id)
         await bot.send_message(message.chat.id, "Убедитесь что ввели данные от аккаунта в верном формате логин:пароль")
 
-
     # Приёмник комманд
     @dp.callback_query_handler(state='*')
     async def menu(call: types.CallbackQuery, state: FSMContext):
