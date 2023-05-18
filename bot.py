@@ -12,7 +12,7 @@ try:
     # Включаем логирование, чтобы не пропустить важные сообщения
     logging.basicConfig(level=logging.INFO)
     # Объект бота
-    bot = Bot(token="6140832192:AAGXVzLxuBIKKGjU3QEOGx9a3A_omROHGpM")
+    bot = Bot(token="ТОКЕН_БОТА")
     # Диспетчер
     dp = Dispatcher(bot, storage=MemoryStorage())
 
