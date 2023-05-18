@@ -1,3 +1,5 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
@@ -5,12 +7,14 @@ from mails import email_parsers
 
 
 def start_account(need, username, password, mail, mail_password, url):
-    with open('delays.txt', 'r') as f:
+    with open('config.txt', 'r') as f:
         post_sleep = float(f.readline().replace('\n', '').split('=')[1].strip())
         like_retw_sleep = float(f.readline().replace('\n', '').split('=')[1].strip())
+        proxy = f.readline().replace('\n', '').split('=')[1].strip()
 
         print(post_sleep, like_retw_sleep)
 
+        #dr_proxy = json.loads(proxy)
         driver = webdriver.Chrome()
         # Открытие страницы для входа в аккаунт
         driver.get('https://twitter.com/login')
@@ -39,8 +43,12 @@ def start_account(need, username, password, mail, mail_password, url):
             elif "gmail.com" in mail:
                 code = email_parsers.get_code(mail, mail_password, email_parsers.GMAIL)
             else:
-                print("Неизвесный почтовый домен, пропускаем аккаунт")
-                return
+                print("Неизвесный почтовый домен")
+                code = email_parsers.get_code(mail, mail_password, email_parsers.GMAIL)
+                if "-" in code:
+                    print("Отменено, пропускаем аккаунт")
+                    return [0,0]
+
             if code:
                 print(f"Код: {code}")
                 code_input = driver.find_element('xpath', '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
