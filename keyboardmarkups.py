@@ -3,13 +3,10 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardBut
 back_menu = InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(text='Отмена', callback_data='back_menu'))
 back_button = InlineKeyboardButton(text='⬅  Назад', callback_data='back_menu')
 
-
 btnMainMenu = KeyboardButton('⬅️Главное меню')
 # --Main menu--
 btnAccounts = InlineKeyboardButton(text='👤 Работа с аккаунтами', callback_data='accounts')
 #btnProxy = InlineKeyboardButton(text='🗄 Изменить прокси', callback_data='proxy')
-#btnTimings = InlineKeyboardButton(text='🕑 Установить задержки', callback_data='delays')
-#btnQuantity = InlineKeyboardButton(text='📐 Установить количество твитов', callback_data='quantity')
 btnBegin = InlineKeyboardButton(text='🤖 Запуск', callback_data='launch')
 btnList = InlineKeyboardButton(text='🗄 Список аккаунтов', callback_data='accounts_list')
 mainMenu = InlineKeyboardMarkup(row_width=1).add(btnAccounts, btnList,btnBegin)

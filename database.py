@@ -10,6 +10,7 @@ class Accounts(Model):
     mail = CharField()
     mail_password = CharField()
 
+
     class Meta:
         db_table = 'Accounts'
         database = db

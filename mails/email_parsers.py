@@ -6,23 +6,6 @@ OUTLOOK = ("outlook.office365.com", "INBOX")
 GMAIL = ("imap.gmail.com", "INBOX")
 
 
-def get_mailbox_folders(username, password):
-    server = imaplib.IMAP4_SSL('imap.mail.ru', 993)
-    server.login(username, password)
-
-    response, folder_list = server.list()
-
-    folders = []
-    for folder in folder_list:
-        # Извлекаем имя папки из ответа сервера
-        _, folder_name = folder.decode().split(' "/" ')
-        folders.append(folder_name)
-
-    server.logout()
-
-    return folders
-
-
 def read_mail(username, password, mail_service):
     server = imaplib.IMAP4_SSL(mail_service[0], 993)
     server.login(username, password)
@@ -58,7 +41,6 @@ def read_mail(username, password, mail_service):
             subject = email_message["Subject"]
             subjects.append(subject)
 
-
     server.close()
     server.logout()
 
@@ -67,10 +49,9 @@ def read_mail(username, password, mail_service):
 
 def get_code(login, password, server):
     if "gmail" in server[0]:
-        code = input(f"Введите код пришедший на почту {login}...")
+        code = input(f"Введите код пришедший на почту {login}:")
         return str(code)
     else:
-
         senders, subjects = read_mail(login, password, server)
         try:
             if "info@twitter" in senders[0]:
@@ -83,11 +64,3 @@ def get_code(login, password, server):
         except IndexError:
             print("Новых писем на почте не обнаружено")
             return None
-
-# code = get_code("progamernikita@mail.ru", "uHDkANFnKVnxN6FBv1es", MAIL_RU)
-# print(f"Код: {code}")
-
-
-#progamernikita@gmail.com rjulf-yb,elm ns pfgjvybim2
-#progamernikita@mail.ru uHDkANFnKVnxN6FBv1es
-#bibabyba@outlook.com kjfhHY76324okHui

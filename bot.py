@@ -31,7 +31,7 @@ try:
 
         set_tweet_quantity = State()
 
-        get_account = State() # не придумал норм название (получение аккаунта для накрутки)
+        get_account = State()
         post_count = State()
 
     # Хэндлер на команду /start
@@ -124,8 +124,8 @@ try:
                 await bot.send_message(message.from_user.id, 'Сначала добавьте аккаунты')
                 return await state.finish()
 
-            tweets = 0 # я на чиле :)
-            likes = 0 # я на чиле :)
+            tweets = 0
+            likes = 0
 
             for i in accounts:
                 res = main_script.start_account(int(message.text), i['login'], i['password'], i['mail'], i['mail_password'], data['url'])
@@ -135,6 +135,7 @@ try:
             await bot.send_message(message.from_user.id, f'Успешно накручено {tweets} ретвитов и {likes} лайков')
 
             await state.finish()
+
 
     @dp.message_handler(state=StateWorker.add_account_login)
     async def add_account_login(message: types.Message, state: FSMContext):
@@ -177,7 +178,6 @@ try:
 
         elif call.data == "delays":
             await call.message.edit_text("Выбери задержку для редактирования", reply_markup=nav.delay_kb)
-            #await StateWorker.set_delays.set()
 
         elif call.data == "quantity":
             await call.message.answer("Количество твитов")
